@@ -1,0 +1,141 @@
+Create a full-stack OSINT (Open Source Intelligence) web application called **"ShadowTrace OSINT Platform"** with a modern, dark cybersecurity-themed UI.
+
+### 🎯 Core Objective:
+
+Build a modular OSINT investigation tool that can gather, analyze, and visualize publicly available intelligence data from multiple sources in a clean and interactive dashboard.
+
+---
+
+### 🧱 Tech Stack:
+
+* Frontend: React.js + Tailwind CSS
+* Backend: Node.js (Express)
+* Database: MongoDB
+* APIs: Integrate public/free OSINT APIs where possible
+* Use Axios for API calls
+* Authentication: JWT-based login system
+
+---
+
+### 🎨 UI/UX Design:
+
+* Dark theme (black + neon green/blue cyberpunk style)
+* Animated dashboard (use charts, graphs, glowing cards)
+* Sidebar navigation with icons:
+
+  * Dashboard
+  * Username Search
+  * Email Intelligence
+  * Domain Lookup
+  * IP Tracker
+  * Phone Number Lookup
+  * Metadata Extractor
+  * Report Generator
+* Add loading animations, hover effects, and smooth transitions
+
+---
+
+### 🔍 Features / Modules:
+
+#### 1. Username OSINT
+
+* Search usernames across multiple platforms
+* Show profile links, status, and platform icons
+
+#### 2. Email Intelligence
+
+* Check breaches (use mock or API like HaveIBeenPwned if possible)
+* Validate email format and domain
+
+#### 3. Domain Intelligence
+
+* WHOIS lookup
+* DNS records
+* Subdomain enumeration (basic simulation if API not available)
+
+#### 4. IP Intelligence
+
+* IP geolocation (city, country, ISP)
+* Map visualization (use Leaflet or Google Maps)
+
+#### 5. Phone Number Lookup
+
+* Country detection
+* Carrier info (mock if API not available)
+
+#### 6. Metadata Extractor
+
+* Upload image/file
+* Extract EXIF metadata (use library)
+
+#### 7. Social Media Scraper (basic)
+
+* Extract publicly available info (simulate if needed)
+
+#### 8. Dark Web Mentions (Simulation)
+
+* Show mock results for educational/demo purposes
+
+---
+
+### 📊 Dashboard:
+
+* Show summary cards:
+
+  * Total searches
+  * Recent investigations
+  * Risk score (calculated)
+* Graphs for activity
+
+---
+
+### 📄 Report Generator:
+
+* Generate downloadable PDF report of investigation
+* Include:
+
+  * Target input
+  * Results from all modules
+  * Risk score
+  * Timestamp
+
+---
+
+### 🔐 Security & Ethics:
+
+* Add disclaimer:
+  "This tool is for educational and legal OSINT investigations only."
+* Prevent misuse by limiting requests (rate limiting)
+
+---
+
+### ⚙️ Additional:
+
+* Clean folder structure (frontend/backend separation)
+* Add README with setup steps
+* Include sample/mock data if APIs fail
+* Make code beginner-friendly with comments
+
+---
+
+### ✨ Bonus:
+
+* Add AI assistant panel (basic chatbot UI)
+* Add export to JSON
+* Add search history
+
+---
+
+### 🚨 Important:
+
+* If real APIs are not available, simulate realistic OSINT responses
+* Ensure UI looks like a professional cybersecurity tool
+* Keep it responsive (mobile + desktop)
+
+---
+
+### Final Output:
+
+* Fully working project with frontend + backend
+* Ready to run on Replit with minimal setup
+* Include instructions to run the project

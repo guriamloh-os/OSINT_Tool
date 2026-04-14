@@ -1,22 +1,40 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: ShadowTrace OSINT Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: username
+    description: Username OSINT operations
+  - name: email
+    description: Email intelligence operations
+  - name: domain
+    description: Domain intelligence operations
+  - name: ip
+    description: IP intelligence operations
+  - name: phone
+    description: Phone number lookup operations
+  - name: metadata
+    description: Metadata extraction operations
+  - name: reports
+    description: Report generation operations
+  - name: dashboard
+    description: Dashboard summary operations
+  - name: history
+    description: Search history operations
+  - name: ai
+    description: AI assistant operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +42,223 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /history:
+    get:
+      operationId: getSearchHistory
+      tags: [history]
+      summary: Get search history
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: module
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search history entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryEntry"
+    delete:
+      operationId: clearSearchHistory
+      tags: [history]
+      summary: Clear all search history
+      responses:
+        "200":
+          description: History cleared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /username/search:
+    post:
+      operationId: searchUsername
+      tags: [username]
+      summary: Search username across platforms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsernameSearchBody"
+      responses:
+        "200":
+          description: Username search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsernameSearchResult"
+
+  /email/intelligence:
+    post:
+      operationId: emailIntelligence
+      tags: [email]
+      summary: Email intelligence lookup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailIntelligenceBody"
+      responses:
+        "200":
+          description: Email intelligence result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailIntelligenceResult"
+
+  /domain/lookup:
+    post:
+      operationId: domainLookup
+      tags: [domain]
+      summary: Domain intelligence lookup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DomainLookupBody"
+      responses:
+        "200":
+          description: Domain intelligence result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DomainLookupResult"
+
+  /ip/track:
+    post:
+      operationId: trackIp
+      tags: [ip]
+      summary: IP geolocation and intelligence
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IpTrackBody"
+      responses:
+        "200":
+          description: IP intelligence result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IpTrackResult"
+
+  /phone/lookup:
+    post:
+      operationId: phoneLookup
+      tags: [phone]
+      summary: Phone number lookup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhoneLookupBody"
+      responses:
+        "200":
+          description: Phone lookup result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhoneLookupResult"
+
+  /metadata/extract:
+    post:
+      operationId: extractMetadata
+      tags: [metadata]
+      summary: Extract metadata from file/URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MetadataExtractBody"
+      responses:
+        "200":
+          description: Extracted metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetadataExtractResult"
+
+  /reports/generate:
+    post:
+      operationId: generateReport
+      tags: [reports]
+      summary: Generate investigation report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateReportBody"
+      responses:
+        "200":
+          description: Generated report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportResult"
+
+  /reports:
+    get:
+      operationId: listReports
+      tags: [reports]
+      summary: List all saved reports
+      responses:
+        "200":
+          description: List of reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReportSummary"
+
+  /ai/chat:
+    post:
+      operationId: aiChat
+      tags: [ai]
+      summary: Chat with AI assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiChatBody"
+      responses:
+        "200":
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiChatResult"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +266,496 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success, message]
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalSearches:
+          type: integer
+        recentInvestigations:
+          type: integer
+        riskScore:
+          type: number
+        activeModules:
+          type: integer
+        threatLevel:
+          type: string
+          enum: [low, medium, high, critical]
+        activityByModule:
+          type: array
+          items:
+            $ref: "#/components/schemas/ModuleActivity"
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/HistoryEntry"
+        weeklyActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeeklyDataPoint"
+      required: [totalSearches, recentInvestigations, riskScore, activeModules, threatLevel, activityByModule, recentActivity, weeklyActivity]
+
+    ModuleActivity:
+      type: object
+      properties:
+        module:
+          type: string
+        count:
+          type: integer
+        percentage:
+          type: number
+      required: [module, count, percentage]
+
+    WeeklyDataPoint:
+      type: object
+      properties:
+        day:
+          type: string
+        searches:
+          type: integer
+        risk:
+          type: number
+      required: [day, searches, risk]
+
+    HistoryEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        module:
+          type: string
+        query:
+          type: string
+        timestamp:
+          type: string
+        riskScore:
+          type: number
+        status:
+          type: string
+          enum: [completed, failed, pending]
+      required: [id, module, query, timestamp, riskScore, status]
+
+    UsernameSearchBody:
+      type: object
+      properties:
+        username:
+          type: string
+      required: [username]
+
+    UsernameSearchResult:
+      type: object
+      properties:
+        username:
+          type: string
+        totalFound:
+          type: integer
+        riskScore:
+          type: number
+        platforms:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlatformResult"
+        summary:
+          type: string
+      required: [username, totalFound, riskScore, platforms, summary]
+
+    PlatformResult:
+      type: object
+      properties:
+        platform:
+          type: string
+        url:
+          type: string
+        status:
+          type: string
+          enum: [found, not_found, error]
+        profileData:
+          $ref: "#/components/schemas/ProfileData"
+      required: [platform, url, status]
+
+    ProfileData:
+      type: object
+      properties:
+        displayName:
+          type: string
+        bio:
+          type: string
+        followers:
+          type: integer
+        following:
+          type: integer
+        posts:
+          type: integer
+        verified:
+          type: boolean
+        joinDate:
+          type: string
+
+    EmailIntelligenceBody:
+      type: object
+      properties:
+        email:
+          type: string
+      required: [email]
+
+    EmailIntelligenceResult:
+      type: object
+      properties:
+        email:
+          type: string
+        isValid:
+          type: boolean
+        domain:
+          type: string
+        mxRecords:
+          type: array
+          items:
+            type: string
+        breaches:
+          type: array
+          items:
+            $ref: "#/components/schemas/BreachResult"
+        disposable:
+          type: boolean
+        riskScore:
+          type: number
+        reputation:
+          type: string
+          enum: [clean, suspicious, malicious, unknown]
+      required: [email, isValid, domain, mxRecords, breaches, disposable, riskScore, reputation]
+
+    BreachResult:
+      type: object
+      properties:
+        name:
+          type: string
+        date:
+          type: string
+        dataClasses:
+          type: array
+          items:
+            type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+      required: [name, date, dataClasses, severity]
+
+    DomainLookupBody:
+      type: object
+      properties:
+        domain:
+          type: string
+      required: [domain]
+
+    DomainLookupResult:
+      type: object
+      properties:
+        domain:
+          type: string
+        whois:
+          $ref: "#/components/schemas/WhoisData"
+        dnsRecords:
+          $ref: "#/components/schemas/DnsRecords"
+        subdomains:
+          type: array
+          items:
+            type: string
+        technologies:
+          type: array
+          items:
+            type: string
+        riskScore:
+          type: number
+        sslInfo:
+          $ref: "#/components/schemas/SslInfo"
+      required: [domain, whois, dnsRecords, subdomains, technologies, riskScore, sslInfo]
+
+    WhoisData:
+      type: object
+      properties:
+        registrar:
+          type: string
+        createdDate:
+          type: string
+        expiryDate:
+          type: string
+        updatedDate:
+          type: string
+        registrant:
+          type: string
+        country:
+          type: string
+        nameservers:
+          type: array
+          items:
+            type: string
+      required: [registrar, createdDate, expiryDate, updatedDate, registrant, country, nameservers]
+
+    DnsRecords:
+      type: object
+      properties:
+        A:
+          type: array
+          items:
+            type: string
+        MX:
+          type: array
+          items:
+            type: string
+        NS:
+          type: array
+          items:
+            type: string
+        TXT:
+          type: array
+          items:
+            type: string
+        CNAME:
+          type: array
+          items:
+            type: string
+      required: [A, MX, NS, TXT, CNAME]
+
+    SslInfo:
+      type: object
+      properties:
+        issuer:
+          type: string
+        validFrom:
+          type: string
+        validTo:
+          type: string
+        valid:
+          type: boolean
+      required: [issuer, validFrom, validTo, valid]
+
+    IpTrackBody:
+      type: object
+      properties:
+        ip:
+          type: string
+      required: [ip]
+
+    IpTrackResult:
+      type: object
+      properties:
+        ip:
+          type: string
+        city:
+          type: string
+        region:
+          type: string
+        country:
+          type: string
+        countryCode:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        isp:
+          type: string
+        org:
+          type: string
+        asn:
+          type: string
+        timezone:
+          type: string
+        isProxy:
+          type: boolean
+        isVpn:
+          type: boolean
+        isTor:
+          type: boolean
+        riskScore:
+          type: number
+        threatLevel:
+          type: string
+          enum: [low, medium, high, critical]
+        openPorts:
+          type: array
+          items:
+            type: integer
+      required: [ip, city, region, country, countryCode, latitude, longitude, isp, org, asn, timezone, isProxy, isVpn, isTor, riskScore, threatLevel, openPorts]
+
+    PhoneLookupBody:
+      type: object
+      properties:
+        phone:
+          type: string
+      required: [phone]
+
+    PhoneLookupResult:
+      type: object
+      properties:
+        phone:
+          type: string
+        valid:
+          type: boolean
+        countryCode:
+          type: string
+        country:
+          type: string
+        carrier:
+          type: string
+        lineType:
+          type: string
+          enum: [mobile, landline, voip, unknown]
+        region:
+          type: string
+        spamScore:
+          type: number
+        riskScore:
+          type: number
+      required: [phone, valid, countryCode, country, carrier, lineType, region, spamScore, riskScore]
+
+    MetadataExtractBody:
+      type: object
+      properties:
+        url:
+          type: string
+        filename:
+          type: string
+        fileType:
+          type: string
+      required: [fileType]
+
+    MetadataExtractResult:
+      type: object
+      properties:
+        filename:
+          type: string
+        fileType:
+          type: string
+        fileSize:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        exifData:
+          $ref: "#/components/schemas/ExifData"
+        gpsCoordinates:
+          $ref: "#/components/schemas/GpsCoordinates"
+        riskScore:
+          type: number
+        warnings:
+          type: array
+          items:
+            type: string
+      required: [filename, fileType, fileSize, metadata, riskScore, warnings]
+
+    ExifData:
+      type: object
+      properties:
+        make:
+          type: string
+        model:
+          type: string
+        software:
+          type: string
+        dateTime:
+          type: string
+        exposureTime:
+          type: string
+        fNumber:
+          type: string
+        iso:
+          type: integer
+
+    GpsCoordinates:
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number
+        altitude:
+          type: number
+      required: [latitude, longitude, altitude]
+
+    GenerateReportBody:
+      type: object
+      properties:
+        title:
+          type: string
+        target:
+          type: string
+        modules:
+          type: array
+          items:
+            type: string
+        includeHistory:
+          type: boolean
+      required: [title, target, modules]
+
+    ReportResult:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        target:
+          type: string
+        createdAt:
+          type: string
+        riskScore:
+          type: number
+        summary:
+          type: string
+        modules:
+          type: array
+          items:
+            type: string
+        downloadUrl:
+          type: string
+      required: [id, title, target, createdAt, riskScore, summary, modules, downloadUrl]
+
+    ReportSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        target:
+          type: string
+        createdAt:
+          type: string
+        riskScore:
+          type: number
+        modules:
+          type: array
+          items:
+            type: string
+      required: [id, title, target, createdAt, riskScore, modules]
+
+    AiChatBody:
+      type: object
+      properties:
+        message:
+          type: string
+        context:
+          type: string
+      required: [message]
+
+    AiChatResult:
+      type: object
+      properties:
+        response:
+          type: string
+        suggestions:
+          type: array
+          items:
+            type: string
+      required: [response, suggestions]
