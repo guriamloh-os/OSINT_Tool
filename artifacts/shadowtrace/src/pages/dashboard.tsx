@@ -5,10 +5,66 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip as Recharts
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 
+function isDashboardSummary(value: unknown): value is {
+  totalSearches: number;
+  activeModules: number;
+  riskScore: number;
+  threatLevel: string;
+  weeklyActivity: Array<{ day: string; searches: number }>;
+  activityByModule: Array<{ module: string; count: number }>;
+  recentActivity: Array<{
+    id: string | number;
+    query: string;
+    module: string;
+    timestamp: string;
+    riskScore: number;
+    status: string;
+  }>;
+} {
+  if (!value || typeof value !== "object") return false;
+
+  const summary = value as Record<string, unknown>;
+  return (
+    typeof summary.totalSearches === "number" &&
+    typeof summary.activeModules === "number" &&
+    typeof summary.riskScore === "number" &&
+    typeof summary.threatLevel === "string" &&
+    Array.isArray(summary.weeklyActivity) &&
+    Array.isArray(summary.activityByModule) &&
+    Array.isArray(summary.recentActivity)
+  );
+}
+
 export default function Dashboard() {
-  const { data: summary, isLoading } = useGetDashboardSummary();
+  const { data, error, isLoading } = useGetDashboardSummary();
+  const summary = isDashboardSummary(data) ? data : null;
 
   if (isLoading || !summary) {
+    if (error) {
+      return (
+        <div className="space-y-6">
+          <h1 className="text-3xl font-bold text-primary glow-text flex items-center gap-2">
+            <Activity className="h-8 w-8" /> SYSTEM OVERVIEW
+          </h1>
+          <Card className="bg-card/40 border-yellow-500/30 backdrop-blur">
+            <CardHeader>
+              <CardTitle className="text-yellow-400 uppercase flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" /> Backend Not Connected
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm text-muted-foreground">
+              <p>
+                The frontend is deployed, but live OSINT data is unavailable because the API is not reachable from this Netlify site.
+              </p>
+              <p>
+                Deploy the backend and point the frontend API requests to it to enable dashboard stats and search tools.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-6">
         <h1 className="text-3xl font-bold text-primary glow-text flex items-center gap-2">

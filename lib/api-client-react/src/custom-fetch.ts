@@ -290,6 +290,10 @@ function inferResponseType(response: Response): "json" | "text" | "blob" {
   return "blob";
 }
 
+function isApiRequestUrl(url: string): boolean {
+  return /(^|https?:\/\/[^/]+)\/api(\/|$)/i.test(url);
+}
+
 async function parseSuccessBody(
   response: Response,
   responseType: "json" | "text" | "blob" | "auto",
@@ -301,6 +305,18 @@ async function parseSuccessBody(
 
   const effectiveType =
     responseType === "auto" ? inferResponseType(response) : responseType;
+  const mediaType = getMediaType(response.headers);
+
+  if (
+    isApiRequestUrl(requestInfo.url) &&
+    mediaType === "text/html" &&
+    effectiveType === "text"
+  ) {
+    throw new TypeError(
+      `API request to ${requestInfo.url} returned HTML instead of JSON. ` +
+        `This usually means the frontend is deployed without its backend API.`,
+    );
+  }
 
   switch (effectiveType) {
     case "json":
